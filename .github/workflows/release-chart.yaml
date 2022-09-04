@@ -8,7 +8,7 @@ on:
       - charts/**
 
 jobs:
-  release:
+  release-chart:
     permissions:
       contents: write
     runs-on: ubuntu-latest
