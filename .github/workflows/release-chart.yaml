@@ -32,3 +32,5 @@ jobs:
           config: charts/cr.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-chart-{{ .Version }}"
+          CR_MAKE_RELEASE_LATEST: "false"

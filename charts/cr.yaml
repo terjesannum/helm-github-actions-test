@@ -1,2 +1,0 @@
-release-name-template: "{{ .Name }}-helm-chart-{{ .Version }}"
-make-release-latest: "false"
