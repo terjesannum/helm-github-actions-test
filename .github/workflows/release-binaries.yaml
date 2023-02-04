@@ -1,6 +1,7 @@
+on:
   push:
     tags:
-      - 'test-helm-chart-[0-9]+.[0-9]+.[0-9]+'
+      - 'test-[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   releases-matrix:
@@ -23,7 +24,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Get version
         id: get_version
-        run: echo "version=${GITHUB_REF#refs/tags/test-helm-chart-}" >> $GITHUB_OUTPUT
+        run: echo "version=${GITHUB_REF#refs/tags/test-}" >> $GITHUB_OUTPUT
       - uses: wangyoucao577/go-release-action@v1.35
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
