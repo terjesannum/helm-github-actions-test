@@ -1,7 +1,6 @@
-on: 
-  release:
-    types:
-      - created
+  push:
+    tags:
+      - 'test-helm-chart-[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   releases-matrix:
@@ -22,10 +21,13 @@ jobs:
             goos: darwin
     steps:
       - uses: actions/checkout@v3
-      - name: debug
-        run: echo ${GITHUB_REF}
+      - name: Get version
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/test-helm-chart-}" >> $GITHUB_OUTPUT
       - uses: wangyoucao577/go-release-action@v1.35
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
+          release_tag: ${{ steps.get_version.outputs.version }}
+          ldflags: -X main.version=${{ steps.get_version.outputs.version }}
