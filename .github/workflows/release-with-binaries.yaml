@@ -9,6 +9,7 @@ on:
 
 jobs:
   release-chart:
+    name: Release chart
     permissions:
       contents: write
     runs-on: ubuntu-latest
