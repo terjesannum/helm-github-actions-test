@@ -3,6 +3,16 @@ entries:
   test:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-02-05T09:44:38.220188251Z"
+    description: A Helm chart for Kubernetes
+    digest: 062e77b1a120e2a2a2f0e4322e63a2b70eca047f602a7a9609e8ec0a888e335b
+    name: test
+    type: application
+    urls:
+    - https://github.com/terjesannum/helm-github-actions-test/releases/download/test-0.2.3/test-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-02-05T09:40:04.135390162Z"
     description: A Helm chart for Kubernetes
     digest: 1898bac597c5ae118c25ea42835ba3bc30724c60e6a16897e41fbcd70e29a063
@@ -151,4 +161,4 @@ entries:
     urls:
     - https://github.com/terjesannum/helm-github-actions-test/releases/download/test-0.1.0/test-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-05T09:40:04.135482964Z"
+generated: "2023-02-05T09:44:38.22035945Z"
