@@ -25,6 +25,8 @@ jobs:
 
       - name: Install Helm
         uses: azure/setup-helm@v3
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
@@ -58,5 +60,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          release_tag: "test-${{ steps.get_version.outputs.version }}"
+          release_tag: "${{ steps.get_version.outputs.version }}"
           ldflags: -X main.version=${{ steps.get_version.outputs.version }}
