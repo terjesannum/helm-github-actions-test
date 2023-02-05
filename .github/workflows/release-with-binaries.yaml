@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - charts/**
+
+jobs:
+  release-chart:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  releases-binaries:
+    name: Release binaries
+    needs: release-chart
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm, arm64]
+        exclude:
+          - goarch: arm
+            goos: windows
+          - goarch: arm64
+            goos: windows
+          - goarch: arm
+            goos: darwin
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get version
+        id: get_version
+        run: "sed -n 's/^version: /version=/p' charts/test/Chart.yaml >> $GITHUB_OUTPUT"
+      - uses: wangyoucao577/go-release-action@v1.35
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          release_tag: "test-${{ steps.get_version.outputs.version }}"
+          ldflags: -X main.version=${{ steps.get_version.outputs.version }}
