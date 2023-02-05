@@ -60,6 +60,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          asset_name: "${BINARY_NAME}-${{ steps.get_version.outputs.version }}-${GOOS}-${GOARCH}"
+          asset_name: "test-${{ steps.get_version.outputs.version }}-${{ matrix.goos }}-${{ matrix.goarch }}"
           release_tag: "test-${{ steps.get_version.outputs.version }}"
           ldflags: -X main.version=${{ steps.get_version.outputs.version }}
