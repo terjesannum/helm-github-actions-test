@@ -86,5 +86,5 @@ jobs:
           goarch: ${{ matrix.goarch }}
           asset_name: "test-${{ steps.get_version.outputs.version }}-${{ matrix.goos }}-${{ matrix.goarch }}"
           release_tag: "test-${{ steps.get_version.outputs.version }}"
-          ldflags: "-X main.version=foo/${{ steps.get_version.outputs.version }} bar/zot"
+          ldflags: "-X 'main.version=foo/${{ steps.get_version.outputs.version }} bar/zot'"
 
