@@ -8,8 +8,58 @@ on:
       - charts/**
 
 jobs:
+  release-docker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    - name: Get docker image version
+      id: get_version
+      run: "sed -n 's/^version: /version=/p' charts/test/Chart.yaml >> $GITHUB_OUTPUT"
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        platforms: linux/amd64
+        provenance: false
+        push: false
+        tags: foo:${{ steps.get_version.outputs.version }}
+
+  release-chart:
+    name: Release chart
+    needs: release-docker
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
   release-binaries:
     name: Release binaries
+    needs: release-chart
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -37,30 +87,4 @@ jobs:
           asset_name: "test-${{ steps.get_version.outputs.version }}-${{ matrix.goos }}-${{ matrix.goarch }}"
           release_tag: "test-${{ steps.get_version.outputs.version }}"
           ldflags: -X main.version=${{ steps.get_version.outputs.version }}
-  release-chart:
-    name: Release chart
-    needs: release-binaries
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
