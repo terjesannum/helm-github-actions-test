@@ -5,7 +5,7 @@ import "fmt"
 var (
 	version string
 )
-
+a
 func main() {
 	if version == "" {
 		version = "n/a"

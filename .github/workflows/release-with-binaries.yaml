@@ -8,8 +8,20 @@ on:
       - charts/**
 
 jobs:
+  verify-release:
+    name: Verify release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+
+      - name: Build
+        run: go test .
   release-chart:
     name: Release chart
+    needs: verify-release
     permissions:
       contents: write
     runs-on: ubuntu-latest
